@@ -7,6 +7,10 @@ import { useEffect, useState } from "react"
 
 export default function About() {
   const titles = ["Full Stack Developer", "Code Enthusiast", "Software Engineer"]
+  const [particles, setParticles] = useState<{ x: number; y: number }[]>([])
+  const [floatingCubes, setFloatingCubes] = useState<{ x: number; y: number }[]>([])
+  const [isClient, setIsClient] = useState(false);
+
   const [currentTitle, setCurrentTitle] = useState(0)
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -18,6 +22,37 @@ export default function About() {
       }, 2000) // Change every 2 seconds
       return () => clearInterval(interval)
     }, [])
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setParticles(
+        Array.from({ length: 50 }).map(() => ({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+        }))
+      )
+  
+      setFloatingCubes(
+        Array.from({ length: 5 }).map(() => ({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+        }))
+      )
+    }
+  }, [])
+  useEffect(() => {
+    setIsClient(true); // Marks that we're on client
+  
+    if (typeof window !== 'undefined') {
+      setFloatingCubes(
+        Array.from({ length: 5 }).map(() => ({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+        }))
+      );
+    }
+  }, []);
+
 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
@@ -52,14 +87,11 @@ export default function About() {
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Floating Particles */}
-        {[...Array(50)].map((_, i) => (
+        {particles.map((dot, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-purple-400 rounded-full opacity-60"
-            initial={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
-            }}
+            initial={{ x: dot.x, y: dot.y }}
             animate={{
               x: Math.random() * window.innerWidth,
               y: Math.random() * window.innerHeight,
@@ -72,35 +104,35 @@ export default function About() {
           />
         ))}
 
+
         {/* Floating Tech Cubes */}
-        {["React", "Next.js", "TypeScript", "Node.js", "MongoDB"].map((tech, i) => (
-          <motion.div
-            key={tech}
-            className="absolute"
-            initial={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
-            }}
-            animate={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
-              rotateX: [0, 360],
-              rotateY: [0, 360],
-            }}
-            transition={{
-              duration: Math.random() * 15 + 10,
-              repeat: Number.POSITIVE_INFINITY,
-              repeatType: "reverse",
-            }}
-            style={{
-              transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`,
-            }}
-          >
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-sm border border-purple-500/30 rounded-lg flex items-center justify-center text-xs font-medium text-purple-300 transform-gpu">
-              {tech}
-            </div>
-          </motion.div>
-        ))}
+        {isClient &&
+          ["React", "Next.js", "TypeScript", "Node.js", "MongoDB"].map((tech, i) => (
+            <motion.div
+              key={tech}
+              className="absolute"
+              initial={{
+                x: floatingCubes[i]?.x || 0,
+                y: floatingCubes[i]?.y || 0,
+              }}
+              animate={{
+                x: Math.random() * (window?.innerWidth || 1000), // safe fallback
+                y: Math.random() * (window?.innerHeight || 800),
+                rotateX: [0, 360],
+                rotateY: [0, 360],
+              }}
+              transition={{
+                duration: Math.random() * 15 + 10,
+                repeat: Infinity,
+                repeatType: "reverse",
+              }}
+            >
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-sm border border-purple-500/30 rounded-lg flex items-center justify-center text-xs font-medium text-purple-300 transform-gpu">
+                {tech}
+              </div>
+            </motion.div>
+          ))}
+        
 
         {/* Gradient Orbs */}
         <motion.div

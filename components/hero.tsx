@@ -9,14 +9,15 @@ import { useEffect, useState } from "react"
 export default function Hero() {
   const titles = ["Full Stack Developer", "Code Enthusiast", "Software Engineer"]
   const [currentTitle, setCurrentTitle] = useState(0)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [dots, setDots] = useState<{ x: number; y: number; opacity: number }[]>([])
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTitle((prev) => (prev + 1) % titles.length)
-    }, 2000) // Change every 2 seconds
+    }, 2000)
     return () => clearInterval(interval)
   }, [])
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -26,18 +27,30 @@ export default function Hero() {
     return () => window.removeEventListener("mousemove", handleMouseMove)
   }, [])
 
+  // Create random dots (only on client)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const newDots = Array.from({ length: 20 }).map(() => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        opacity: Math.random(),
+      }))
+      setDots(newDots)
+    }
+  }, [])
+
   return (
     <section className="min-h-screen flex flex-col justify-center py-12 relative overflow-hidden">
       {/* Animated Starry Background */}
       <div className="absolute inset-0">
-        {[...Array(100)].map((_, i) => (
+        {dots.map((dot, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-white rounded-full"
             initial={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
-              opacity: Math.random(),
+              x: dot.x,
+              y: dot.y,
+              opacity: dot.opacity,
             }}
             animate={{
               opacity: [0.2, 1, 0.2],

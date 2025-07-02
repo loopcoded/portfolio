@@ -28,6 +28,7 @@ const projects = [
     image: "/emotion.jpg?height=450&width=500",
     tags: ["React", "Node.js", "Express", "Python", "Hugging Face", "Wav2Vec2", "Tailwind CSS"],
     github: "https://github.com/loopcoded/EmoSense-A-REALTIME-MULTILINGUAL-EMOTION-DETECTION",
+    demo: "https://emo-sense-a-realtime-multilingual-e.vercel.app/",
     color: "from-blue-500 to-cyan-600",
   },
   {

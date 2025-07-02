@@ -125,7 +125,7 @@ export default function Hero() {
             className="flex flex-wrap gap-4 pt-4"
           >
             <Button asChild size="lg" className="bg-purple-600 hover:bg-purple-700 text-white group">
-              <a href="/public/SEJALSINHA_S_atsRESUME (3).pdf" target="_blank" rel="noopener noreferrer">
+              <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
                 <FileText className="mr-2 h-4 w-4 group-hover:animate-pulse" />
                 My Resume
               </a>
